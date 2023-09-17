@@ -7,9 +7,9 @@ name: Linux tests
 
 on:
   push:
-    branches:
+#    branches:
       # coverage comparison in the "full" step needs to run on main after merges
-      - main
+#      - main
   pull_request:
     branches:
       - main
@@ -31,7 +31,7 @@ permissions:
 
 jobs:
   lint:
-    if: github.repository == 'numpy/numpy' && github.event_name != 'push'
+#    if: github.repository == 'numpy/numpy' && github.event_name != 'push'
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -50,7 +50,7 @@ jobs:
         python tools/linter.py --branch origin/${{ github.base_ref }}
 
   smoke_test:
-    if: "github.repository == 'numpy/numpy'"
+#    if: "github.repository == 'numpy/numpy'"
     runs-on: ubuntu-latest
     env:
       MESON_ARGS: "-Dallow-noblas=true -Dcpu-baseline=none -Dcpu-dispatch=none"
@@ -67,7 +67,12 @@ jobs:
   pypy:
     needs: [smoke_test]
     runs-on: ubuntu-latest
-    if: github.event_name != 'push'
+#    if: github.event_name != 'push'
+    strategy:
+      # Ensure that a wheel builder finishes even if another fails
+      fail-fast: false
+      matrix:
+        python: ["pypy3.9", "pypy3.10"]
     steps:
     - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
       with:
@@ -75,7 +80,7 @@ jobs:
         fetch-depth: 0
     - uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
       with:
-        python-version: 'pypy3.9-v7.3.12'
+        python-version: '${{ matrix.python }}-v7.3.12'
     - name: Install system dependencies
       run: |
         sudo apt-get update
@@ -85,7 +90,7 @@ jobs:
   debug:
     needs: [smoke_test]
     runs-on: ubuntu-latest
-    if: github.event_name != 'push'
+#    if: github.event_name != 'push'
     steps:
     - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
       with:
@@ -148,7 +153,7 @@ jobs:
   benchmark:
     needs: [smoke_test]
     runs-on: ubuntu-latest
-    if: github.event_name != 'push'
+#    if: github.event_name != 'push'
     steps:
     - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
       with:
@@ -179,7 +184,7 @@ jobs:
   sdist:
     needs: [smoke_test]
     runs-on: ubuntu-latest
-    if: github.event_name != 'push'
+#    if: github.event_name != 'push'
     steps:
     - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
       with:
@@ -213,7 +218,7 @@ jobs:
   custom_checks:
     needs: [smoke_test]
     runs-on: ubuntu-latest
-    if: github.event_name != 'push'
+#    if: github.event_name != 'push'
     steps:
     - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
       with:
