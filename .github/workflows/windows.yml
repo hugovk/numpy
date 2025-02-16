@@ -18,7 +18,7 @@ jobs:
     name: x86-64, LP64 OpenBLAS
     runs-on: windows-2019
     # To enable this job on a fork, comment out:
-    if: github.repository == 'numpy/numpy'
+    # if: github.repository == 'numpy/numpy'
     strategy:
       fail-fast: false
       matrix:
@@ -99,7 +99,7 @@ jobs:
     name: MSVC, 32-bit Python, no BLAS
     runs-on: windows-2019
     # To enable this job on a fork, comment out:
-    if: github.repository == 'numpy/numpy'
+    # if: github.repository == 'numpy/numpy'
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
